@@ -1,6 +1,6 @@
 import {FFmpeg} from '@ffmpeg/ffmpeg';
 import {fetchFile, toBlobURL} from '@ffmpeg/util';
-import controlsSpriteUrl from './assets/wechat-controls-sprite.png';
+import controlsSpriteUrl from './assets/codex-call-controls.png';
 import {controlsTransformOrigin, getGreenSlotRect, type CallOverlayOptions} from './video/callOverlaySvg';
 
 const ffmpeg = new FFmpeg();
@@ -34,7 +34,7 @@ const createOverlay = async ({greenSlot, greenSlotScale, controlsScale}: CallOve
   ctx.translate(controlsTransformOrigin.x, controlsTransformOrigin.y);
   ctx.scale(controlsScale, controlsScale);
   ctx.translate(-controlsTransformOrigin.x, -controlsTransformOrigin.y);
-  ctx.drawImage(controlsSprite, 0, 0, 720, 1280);
+  ctx.drawImage(controlsSprite, 0, 830, 720, 480);
   ctx.restore();
 
   const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((value) => value ? resolve(value) : reject(new Error('无法生成叠层图片')), 'image/png'));
