@@ -5,7 +5,7 @@ const defaultProps: VideoCallTemplateProps = {
   videoSrc: '/render-input.mp4',
   greenSlot: true,
   greenSlotScale: 1,
-  controlsScale: 1,
+  controlsScale: 0.8,
 };
 
 export const RemotionRoot = () => {

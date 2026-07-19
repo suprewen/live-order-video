@@ -16,7 +16,7 @@ export const App = () => {
   const [exportStatus, setExportStatus] = useState('上传视频后，可直接在浏览器导出 MP4。');
   const [exportError, setExportError] = useState('');
   const [greenSlotScale, setGreenSlotScale] = useState(1);
-  const [controlsScale, setControlsScale] = useState(1);
+  const [controlsScale, setControlsScale] = useState(0.8);
 
   useEffect(() => () => {
     if (videoSrc.startsWith('blob:')) URL.revokeObjectURL(videoSrc);
@@ -82,7 +82,7 @@ export const App = () => {
             <div className="option-fields">
               <label htmlFor="green-slot-scale"><span>绿幕大小</span><output>{Math.round(greenSlotScale * 100)}%</output><input id="green-slot-scale" type="range" min="0.7" max="1.4" step="0.05" value={greenSlotScale} onChange={(event) => setGreenSlotScale(Number(event.target.value))} /></label>
               <label htmlFor="controls-scale"><span>通话 UI 大小</span><output>{Math.round(controlsScale * 100)}%</output><input id="controls-scale" type="range" min="0.7" max="1.25" step="0.05" value={controlsScale} onChange={(event) => setControlsScale(Number(event.target.value))} /></label>
-              <button className="reset-options" type="button" onClick={() => { setGreenSlotScale(1); setControlsScale(1); }}><RotateCcw size={14} />恢复默认</button>
+              <button className="reset-options" type="button" onClick={() => { setGreenSlotScale(1); setControlsScale(0.8); }}><RotateCcw size={14} />恢复默认</button>
             </div>
           </details>
           <div className="render-box"><FileVideo size={20} /><p>{exportStatus || '浏览器端合成出现问题。'}</p>{isExporting ? <div className="progress"><span style={{width: `${progress}%`}} /></div> : null}{exportError ? <small className="error">{exportError}</small> : null}</div>
