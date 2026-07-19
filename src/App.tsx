@@ -62,8 +62,8 @@ export const App = () => {
   return (
     <main>
       <section className="intro">
-        <p className="eyebrow"><Sparkles size={15} /> REMOTION TEMPLATE · IN-BROWSER EXPORT</p>
-        <h1>直播点单视频模板</h1>
+        <p className="eyebrow"><Sparkles size={15} /> 视频通话素材</p>
+        <h1>视频通话模板生成器</h1>
         <p className="lede">保留原始人物视频，只叠加视频通话界面与可抠像的商品直播位。视频始终留在你的设备上。</p>
       </section>
 
