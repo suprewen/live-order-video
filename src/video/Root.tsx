@@ -3,7 +3,6 @@ import {VideoCallTemplate, type VideoCallTemplateProps} from './VideoCallTemplat
 
 const defaultProps: VideoCallTemplateProps = {
   videoSrc: '/render-input.mp4',
-  callerName: '正在视频通话',
   greenSlot: true,
 };
 

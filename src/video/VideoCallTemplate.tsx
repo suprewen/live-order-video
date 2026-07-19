@@ -1,9 +1,8 @@
 import {AbsoluteFill, staticFile, Video} from 'remotion';
-import {Mic, MoreHorizontal, PhoneOff, SwitchCamera, Video as VideoIcon, Volume2} from 'lucide-react';
+import {Mic, MoreHorizontal, PhoneOff, SwitchCamera, Video as VideoIcon} from 'lucide-react';
 
 export type VideoCallTemplateProps = {
   videoSrc: string;
-  callerName: string;
   greenSlot: boolean;
 };
 
@@ -18,7 +17,6 @@ const controlStyle = {
 
 export const VideoCallTemplate = ({
   videoSrc,
-  callerName,
   greenSlot,
 }: VideoCallTemplateProps) => {
   const resolvedVideoSrc = videoSrc.startsWith('blob:') ? videoSrc : staticFile(videoSrc.replace(/^\//, ''));
@@ -28,10 +26,7 @@ export const VideoCallTemplate = ({
       <Video src={resolvedVideoSrc} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
       <AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(0,0,0,.32), transparent 25%, transparent 72%, rgba(0,0,0,.48))'}} />
 
-      <div style={{position: 'absolute', top: 42, left: 34, right: 34, display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fff', fontSize: 21, textShadow: '0 1px 5px rgba(0,0,0,.65)'}}>
-        <div style={{display: 'flex', alignItems: 'center', gap: 10}}><Volume2 size={22} strokeWidth={2.2} /><span>{callerName}</span></div>
-        <MoreHorizontal size={29} />
-      </div>
+      <div style={{position: 'absolute', top: 42, right: 34, color: '#fff', textShadow: '0 1px 5px rgba(0,0,0,.65)'}}><MoreHorizontal size={29} /></div>
 
       {greenSlot ? (
         <div style={{position: 'absolute', top: 90, right: 26, width: 208, height: 330, background: '#00FF00'}} />

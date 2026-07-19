@@ -2,15 +2,14 @@ import {existsSync, mkdirSync, rmSync} from 'node:fs';
 import {basename, resolve} from 'node:path';
 import {spawnSync} from 'node:child_process';
 
-const [inputArg, outputArg, nameArg] = process.argv.slice(2);
+const [inputArg, outputArg] = process.argv.slice(2);
 if (!inputArg) {
-  console.error('用法：npm run render -- <输入视频> [输出文件] [联系人名称]');
+  console.error('用法：npm run render -- <输入视频> [输出文件]');
   process.exit(1);
 }
 
 const input = resolve(inputArg);
 const output = resolve(outputArg ?? `out/${basename(input).replace(/\.[^.]+$/, '')}-video-call.mp4`);
-const callerName = nameArg ?? '正在视频通话';
 if (!existsSync(input)) {
   console.error(`找不到输入视频：${input}`);
   process.exit(1);
@@ -30,6 +29,6 @@ if (probe.status !== 0) {
   process.exit(1);
 }
 const frames = Math.max(1, Math.ceil(Number(probe.stdout.trim()) * 30));
-const props = JSON.stringify({videoSrc: '/render-input.mp4', callerName, greenSlot: true});
+const props = JSON.stringify({videoSrc: '/render-input.mp4', greenSlot: true});
 const result = spawnSync('npx', ['remotion', 'render', 'src/remotion.ts', 'VideoCallTemplate', output, `--frames=0-${frames - 1}`, '--codec=h264', `--props=${props}`], {stdio: 'inherit'});
 process.exit(result.status ?? 1);

@@ -20,7 +20,7 @@ export const App = () => {
     if (videoSrc.startsWith('blob:')) URL.revokeObjectURL(videoSrc);
   }, [videoSrc]);
 
-  const inputProps = useMemo(() => ({videoSrc, callerName: '正在视频通话', greenSlot: true}), [videoSrc]);
+  const inputProps = useMemo(() => ({videoSrc, greenSlot: true}), [videoSrc]);
 
   const chooseFile = (file?: File) => {
     if (!file) return;
@@ -42,7 +42,7 @@ export const App = () => {
     setIsExporting(true);
     setExportError('');
     try {
-      const blob = await exportVideoCallTemplate({file: sourceFile, callerName: '正在视频通话', onProgress: setProgress, onStatus: setExportStatus});
+      const blob = await exportVideoCallTemplate({file: sourceFile, onProgress: setProgress, onStatus: setExportStatus});
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;

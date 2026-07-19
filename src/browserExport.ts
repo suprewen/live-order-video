@@ -14,22 +14,6 @@ const setIconStroke = (ctx: CanvasRenderingContext2D) => {
   ctx.lineJoin = 'round';
 };
 
-const drawSpeaker = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
-  setIconStroke(ctx);
-  ctx.beginPath();
-  ctx.moveTo(x - 11, y - 5);
-  ctx.lineTo(x - 5, y - 5);
-  ctx.lineTo(x + 3, y - 12);
-  ctx.lineTo(x + 3, y + 12);
-  ctx.lineTo(x - 5, y + 5);
-  ctx.lineTo(x - 11, y + 5);
-  ctx.closePath();
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(x + 4, y, 9, -0.78, 0.78);
-  ctx.stroke();
-};
-
 const drawIcon = (ctx: CanvasRenderingContext2D, icon: CanvasIcon, x: number, y: number) => {
   setIconStroke(ctx);
   if (icon === 'microphone') {
@@ -96,7 +80,7 @@ const drawIcon = (ctx: CanvasRenderingContext2D, icon: CanvasIcon, x: number, y:
   ctx.fill();
 };
 
-const createOverlay = async (callerName: string): Promise<Uint8Array> => {
+const createOverlay = async (): Promise<Uint8Array> => {
   const canvas = document.createElement('canvas');
   canvas.width = 720;
   canvas.height = 1280;
@@ -114,13 +98,9 @@ const createOverlay = async (callerName: string): Promise<Uint8Array> => {
   ctx.fillStyle = bottomShade;
   ctx.fillRect(0, 940, 720, 340);
 
-  drawSpeaker(ctx, 47, 55);
   ctx.fillStyle = '#fff';
-  ctx.font = '600 21px Arial, "PingFang SC", sans-serif';
-  ctx.textAlign = 'left';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(callerName.slice(0, 18), 68, 56);
   ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
   ctx.font = '700 25px Arial, sans-serif';
   ctx.fillText('•••', 688, 56);
 
@@ -164,12 +144,10 @@ const ensureLoaded = async (onStatus: (status: string) => void) => {
 
 export const exportVideoCallTemplate = async ({
   file,
-  callerName,
   onProgress,
   onStatus,
 }: {
   file: File;
-  callerName: string;
   onProgress: (value: number) => void;
   onStatus: (status: string) => void;
 }): Promise<Blob> => {
@@ -177,7 +155,7 @@ export const exportVideoCallTemplate = async ({
   onStatus('正在准备素材…');
   onProgress(0);
   await ffmpeg.writeFile('input-video', await fetchFile(file));
-  await ffmpeg.writeFile('call-overlay.png', await createOverlay(callerName));
+  await ffmpeg.writeFile('call-overlay.png', await createOverlay());
 
   const progressHandler = ({progress}: {progress: number}) => onProgress(Math.min(99, Math.max(1, Math.round(progress * 100))));
   ffmpeg.on('progress', progressHandler);

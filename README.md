@@ -33,10 +33,10 @@ npm run dev
 npm run render -- /绝对或相对路径/人物视频.mp4
 ```
 
-可指定输出文件和通话名称：
+可指定输出文件：
 
 ```bash
-npm run render -- ./input.mp4 ./out/video-call.mp4 "小王"
+npm run render -- ./input.mp4 ./out/video-call.mp4
 ```
 
 输出为 720×1280、30fps、H.264 MP4。渲染前会先将输入文件标准化为浏览器可渲染的 H.264，再交由 Remotion 合成；临时文件位于 `public/render-input.mp4`，已被 Git 忽略。
