@@ -81,7 +81,7 @@ export const App = () => {
             <summary><SlidersHorizontal size={17} /><span>高级选项</span></summary>
             <div className="option-fields">
               <label htmlFor="green-slot-scale"><span>绿幕大小</span><output>{Math.round(greenSlotScale * 100)}%</output><input id="green-slot-scale" type="range" min="0.7" max="1.4" step="0.05" value={greenSlotScale} onChange={(event) => setGreenSlotScale(Number(event.target.value))} /></label>
-              <label htmlFor="controls-scale"><span>通话 UI 大小</span><output>{Math.round(controlsScale * 100)}%</output><input id="controls-scale" type="range" min="0.7" max="1.4" step="0.05" value={controlsScale} onChange={(event) => setControlsScale(Number(event.target.value))} /></label>
+              <label htmlFor="controls-scale"><span>通话 UI 大小</span><output>{Math.round(controlsScale * 100)}%</output><input id="controls-scale" type="range" min="0.7" max="1.25" step="0.05" value={controlsScale} onChange={(event) => setControlsScale(Number(event.target.value))} /></label>
               <button className="reset-options" type="button" onClick={() => { setGreenSlotScale(1); setControlsScale(1); }}><RotateCcw size={14} />恢复默认</button>
             </div>
           </details>

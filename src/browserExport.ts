@@ -99,14 +99,14 @@ const createOverlay = async ({greenSlotScale, controlsScale}: {greenSlotScale: n
   ctx.fillRect(0, 940, 720, 340);
 
   // 后期合成时可通过色度键移除这块纯绿区域。
-  const greenWidth = 250 * greenSlotScale;
-  const greenHeight = 395 * greenSlotScale;
+  const greenWidth = 312.5 * greenSlotScale;
+  const greenHeight = 493.75 * greenSlotScale;
   ctx.fillStyle = '#00FF00';
   ctx.fillRect(720 - 20 - greenWidth, 78, greenWidth, greenHeight);
 
   ctx.save();
   ctx.translate(360, 1260);
-  ctx.scale(controlsScale, controlsScale);
+  ctx.scale(1.25 * controlsScale, 1.25 * controlsScale);
   ctx.translate(-360, -1260);
   const controls: Array<{x: number; label: string; icon: CanvasIcon; color: string}> = [
     {x: 198, label: '静音', icon: 'microphone', color: 'rgba(34,34,34,.72)'},
