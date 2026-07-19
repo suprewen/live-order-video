@@ -3,4 +3,5 @@ dist
 out
 public/render-input.mp4
 public/export-test.mp4
+public/repro-input.mp4
 .DS_Store

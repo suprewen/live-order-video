@@ -52,7 +52,8 @@ export const App = () => {
       setExportStatus('导出完成，MP4 已开始下载。');
     } catch (error) {
       console.error(error);
-      setExportError('导出失败。请换用 MP4/MOV，或在桌面端 Chrome/Safari 重试。');
+      const message = error instanceof Error ? error.message : '未知错误';
+      setExportError(`导出引擎启动失败：${message}`);
       setExportStatus('');
     } finally {
       setIsExporting(false);

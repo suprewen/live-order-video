@@ -4,8 +4,6 @@ import {fetchFile, toBlobURL} from '@ffmpeg/util';
 const ffmpeg = new FFmpeg();
 let loaded = false;
 
-const CORE_VERSION = '0.12.10';
-
 const createOverlay = async (callerName: string): Promise<Uint8Array> => {
   const canvas = document.createElement('canvas');
   canvas.width = 720;
@@ -61,7 +59,7 @@ const createOverlay = async (callerName: string): Promise<Uint8Array> => {
 const ensureLoaded = async (onStatus: (status: string) => void) => {
   if (loaded) return;
   onStatus('正在下载浏览器端渲染引擎（首次约 31MB）…');
-  const baseURL = `https://cdn.jsdelivr.net/npm/@ffmpeg/core@${CORE_VERSION}/dist/umd`;
+  const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm';
   await ffmpeg.load({
     coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
     wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
