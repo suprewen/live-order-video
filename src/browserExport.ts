@@ -4,6 +4,98 @@ import {fetchFile, toBlobURL} from '@ffmpeg/util';
 const ffmpeg = new FFmpeg();
 let loaded = false;
 
+type CanvasIcon = 'microphone' | 'hangup' | 'camera' | 'switch';
+
+const setIconStroke = (ctx: CanvasRenderingContext2D) => {
+  ctx.strokeStyle = '#fff';
+  ctx.fillStyle = '#fff';
+  ctx.lineWidth = 4;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+};
+
+const drawSpeaker = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
+  setIconStroke(ctx);
+  ctx.beginPath();
+  ctx.moveTo(x - 11, y - 5);
+  ctx.lineTo(x - 5, y - 5);
+  ctx.lineTo(x + 3, y - 12);
+  ctx.lineTo(x + 3, y + 12);
+  ctx.lineTo(x - 5, y + 5);
+  ctx.lineTo(x - 11, y + 5);
+  ctx.closePath();
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(x + 4, y, 9, -0.78, 0.78);
+  ctx.stroke();
+};
+
+const drawIcon = (ctx: CanvasRenderingContext2D, icon: CanvasIcon, x: number, y: number) => {
+  setIconStroke(ctx);
+  if (icon === 'microphone') {
+    ctx.beginPath();
+    ctx.roundRect(x - 7, y - 15, 14, 24, 7);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(x, y + 3, 13, 0, Math.PI);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, y + 16);
+    ctx.lineTo(x, y + 22);
+    ctx.moveTo(x - 8, y + 22);
+    ctx.lineTo(x + 8, y + 22);
+    ctx.stroke();
+    return;
+  }
+  if (icon === 'hangup') {
+    ctx.save();
+    ctx.translate(x, y + 4);
+    ctx.rotate(-0.08);
+    ctx.beginPath();
+    ctx.arc(0, 9, 20, Math.PI * 1.13, Math.PI * 1.87);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(-18, 2);
+    ctx.lineTo(-12, -5);
+    ctx.moveTo(18, 2);
+    ctx.lineTo(12, -5);
+    ctx.stroke();
+    ctx.restore();
+    return;
+  }
+  if (icon === 'camera') {
+    ctx.beginPath();
+    ctx.roundRect(x - 17, y - 11, 24, 22, 3);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + 8, y - 6);
+    ctx.lineTo(x + 18, y - 12);
+    ctx.lineTo(x + 18, y + 12);
+    ctx.lineTo(x + 8, y + 6);
+    ctx.closePath();
+    ctx.stroke();
+    return;
+  }
+  ctx.beginPath();
+  ctx.arc(x, y, 15, -2.2, 0.62);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x + 15, y - 12);
+  ctx.lineTo(x + 15, y - 1);
+  ctx.lineTo(x + 4, y - 1);
+  ctx.closePath();
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(x, y, 15, 0.94, Math.PI + 0.24);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x - 15, y + 12);
+  ctx.lineTo(x - 15, y + 1);
+  ctx.lineTo(x - 4, y + 1);
+  ctx.closePath();
+  ctx.fill();
+};
+
 const createOverlay = async (callerName: string): Promise<Uint8Array> => {
   const canvas = document.createElement('canvas');
   canvas.width = 720;
@@ -22,33 +114,36 @@ const createOverlay = async (callerName: string): Promise<Uint8Array> => {
   ctx.fillStyle = bottomShade;
   ctx.fillRect(0, 940, 720, 340);
 
+  drawSpeaker(ctx, 47, 55);
   ctx.fillStyle = '#fff';
-  ctx.font = '600 21px Arial, PingFang SC, sans-serif';
+  ctx.font = '600 21px Arial, "PingFang SC", sans-serif';
   ctx.textAlign = 'left';
-  ctx.fillText('◖  ' + callerName.slice(0, 18), 34, 66);
+  ctx.textBaseline = 'middle';
+  ctx.fillText(callerName.slice(0, 18), 68, 56);
   ctx.textAlign = 'right';
-  ctx.font = '700 28px Arial, sans-serif';
-  ctx.fillText('···', 688, 62);
+  ctx.font = '700 25px Arial, sans-serif';
+  ctx.fillText('•••', 688, 56);
 
   // 后期合成时可通过色度键移除这块纯绿区域。
   ctx.fillStyle = '#00FF00';
   ctx.fillRect(486, 90, 208, 330);
 
-  const controls = [
-    {x: 164, label: '静音', icon: '♩', color: 'rgba(34,34,34,.72)'},
-    {x: 290, label: '挂断', icon: '⌁', color: '#ef4444'},
-    {x: 416, label: '摄像头', icon: '▣', color: 'rgba(34,34,34,.72)'},
-    {x: 542, label: '切换', icon: '◫', color: 'rgba(34,34,34,.72)'},
+  const controls: Array<{x: number; label: string; icon: CanvasIcon; color: string}> = [
+    {x: 164, label: '静音', icon: 'microphone', color: 'rgba(34,34,34,.72)'},
+    {x: 290, label: '挂断', icon: 'hangup', color: '#ef4444'},
+    {x: 416, label: '摄像头', icon: 'camera', color: 'rgba(34,34,34,.72)'},
+    {x: 542, label: '切换', icon: 'switch', color: 'rgba(34,34,34,.72)'},
   ];
   for (const control of controls) {
     ctx.beginPath();
     ctx.arc(control.x, 1140, 36, 0, Math.PI * 2);
     ctx.fillStyle = control.color;
     ctx.fill();
+    drawIcon(ctx, control.icon, control.x, 1140);
     ctx.fillStyle = '#fff';
-    ctx.font = '500 29px Arial, sans-serif';
-    ctx.fillText(control.icon, control.x, 1151);
-    ctx.font = '500 17px Arial, PingFang SC, sans-serif';
+    ctx.font = '500 17px Arial, "PingFang SC", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
     ctx.fillText(control.label, control.x, 1210);
   }
 
@@ -67,7 +162,7 @@ const ensureLoaded = async (onStatus: (status: string) => void) => {
   loaded = true;
 };
 
-export const exportOrderVideo = async ({
+export const exportVideoCallTemplate = async ({
   file,
   callerName,
   onProgress,
@@ -91,7 +186,7 @@ export const exportOrderVideo = async ({
     '-i', 'input-video', '-i', 'call-overlay.png',
     '-filter_complex', '[0:v]scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280[base];[base][1:v]overlay=0:0:format=auto[outv]',
     '-map', '[outv]', '-map', '0:a?',
-    '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '20',
+    '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '20', '-pix_fmt', 'yuv420p',
     '-c:a', 'aac', '-b:a', '128k', '-shortest', 'video-call.mp4',
   ]);
   const output = await ffmpeg.readFile('video-call.mp4');

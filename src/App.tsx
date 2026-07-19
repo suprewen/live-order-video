@@ -1,7 +1,7 @@
 import {useEffect, useMemo, useState} from 'react';
 import {Player} from '@remotion/player';
 import {Download, FileVideo, LoaderCircle, Sparkles, Upload} from 'lucide-react';
-import {exportOrderVideo} from './browserExport';
+import {exportVideoCallTemplate} from './browserExport';
 import {VideoCallTemplate} from './video/VideoCallTemplate';
 
 const fallbackVideo = '/demo.mp4';
@@ -42,7 +42,7 @@ export const App = () => {
     setIsExporting(true);
     setExportError('');
     try {
-      const blob = await exportOrderVideo({file: sourceFile, callerName: '正在视频通话', onProgress: setProgress, onStatus: setExportStatus});
+      const blob = await exportVideoCallTemplate({file: sourceFile, callerName: '正在视频通话', onProgress: setProgress, onStatus: setExportStatus});
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
