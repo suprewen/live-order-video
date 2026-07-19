@@ -1,27 +1,41 @@
 import {FFmpeg} from '@ffmpeg/ffmpeg';
 import {fetchFile, toBlobURL} from '@ffmpeg/util';
-import {createCallOverlaySvg, type CallOverlayOptions} from './video/callOverlaySvg';
+import controlsSpriteUrl from './assets/wechat-controls-sprite.png';
+import {controlsTransformOrigin, getGreenSlotRect, type CallOverlayOptions} from './video/callOverlaySvg';
 
 const ffmpeg = new FFmpeg();
 let loaded = false;
 
-const createOverlay = async (options: CallOverlayOptions): Promise<Uint8Array> => {
+const loadImage = async (src: string) => {
+  const image = new Image();
+  await new Promise<void>((resolve, reject) => {
+    image.onload = () => resolve();
+    image.onerror = () => reject(new Error('无法加载视频通话控制位素材'));
+    image.src = src;
+  });
+  return image;
+};
+
+const createOverlay = async ({greenSlot, greenSlotScale, controlsScale}: CallOverlayOptions): Promise<Uint8Array> => {
   const canvas = document.createElement('canvas');
   canvas.width = 720;
   canvas.height = 1280;
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('无法创建视频叠层画布');
 
-  const svgBlob = new Blob([createCallOverlaySvg(options)], {type: 'image/svg+xml'});
-  const svgUrl = URL.createObjectURL(svgBlob);
-  const image = new Image();
-  await new Promise<void>((resolve, reject) => {
-    image.onload = () => resolve();
-    image.onerror = () => reject(new Error('无法生成视频通话界面'));
-    image.src = svgUrl;
-  });
-  ctx.drawImage(image, 0, 0, 720, 1280);
-  URL.revokeObjectURL(svgUrl);
+  if (greenSlot) {
+    const greenSlotRect = getGreenSlotRect(greenSlotScale);
+    ctx.fillStyle = '#00FF00';
+    ctx.fillRect(greenSlotRect.x, greenSlotRect.y, greenSlotRect.width, greenSlotRect.height);
+  }
+
+  const controlsSprite = await loadImage(controlsSpriteUrl);
+  ctx.save();
+  ctx.translate(controlsTransformOrigin.x, controlsTransformOrigin.y);
+  ctx.scale(controlsScale, controlsScale);
+  ctx.translate(-controlsTransformOrigin.x, -controlsTransformOrigin.y);
+  ctx.drawImage(controlsSprite, 0, 0, 720, 1280);
+  ctx.restore();
 
   const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((value) => value ? resolve(value) : reject(new Error('无法生成叠层图片')), 'image/png'));
   return new Uint8Array(await blob.arrayBuffer());

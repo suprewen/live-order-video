@@ -1,5 +1,6 @@
 import {AbsoluteFill, staticFile, Video} from 'remotion';
-import {callOverlayDataUrl} from './callOverlaySvg';
+import controlsSpriteUrl from '../assets/wechat-controls-sprite.png';
+import {controlsTransformOrigin, getGreenSlotRect} from './callOverlaySvg';
 
 export type VideoCallTemplateProps = {
   videoSrc: string;
@@ -15,12 +16,13 @@ export const VideoCallTemplate = ({
   controlsScale,
 }: VideoCallTemplateProps) => {
   const resolvedVideoSrc = videoSrc.startsWith('blob:') ? videoSrc : staticFile(videoSrc.replace(/^\//, ''));
-  const overlaySrc = callOverlayDataUrl({greenSlot, greenSlotScale, controlsScale});
+  const greenSlotRect = getGreenSlotRect(greenSlotScale);
 
   return (
     <AbsoluteFill style={{backgroundColor: '#111', overflow: 'hidden'}}>
       <Video src={resolvedVideoSrc} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
-      <img src={overlaySrc} alt="" style={{position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none'}} />
+      {greenSlot ? <div style={{position: 'absolute', left: greenSlotRect.x, top: greenSlotRect.y, width: greenSlotRect.width, height: greenSlotRect.height, background: '#00FF00'}} /> : null}
+      <img src={controlsSpriteUrl} alt="" style={{position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', transform: `scale(${controlsScale})`, transformOrigin: `${(controlsTransformOrigin.x / 720) * 100}% ${(controlsTransformOrigin.y / 1280) * 100}%`}} />
     </AbsoluteFill>
   );
 };
